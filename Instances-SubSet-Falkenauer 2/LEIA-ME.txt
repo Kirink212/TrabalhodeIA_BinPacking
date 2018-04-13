@@ -1,0 +1,6 @@
+- Subconjunto de Instâncias de E. Falkenauer (1994)
+- As instâncias possuem o seguinte formato:
+   Número de itens (n)
+   Capacidade dos bins (c)
+   Para cada item j (j = 1,...,n):
+     peso(wj)
