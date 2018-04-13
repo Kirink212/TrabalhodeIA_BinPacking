@@ -1,0 +1,1 @@
+# TrabalhodeIA_BinPacking
