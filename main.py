@@ -1,5 +1,9 @@
-from time import time
-from random import shuffle
+########################################
+############# LIBRARIES ################
+########################################
+
+from time import time #Library to calculate algorithm running time
+#from random import shuffle
 from re import finditer
 from operator import itemgetter
 
@@ -7,18 +11,26 @@ from operator import itemgetter
 ######### FUNCTION DECLARATION #########
 ########################################
 
+
+#Reading the InstanceArchive.txt
+
 def readInstanceArchive(filePath):
 	file = open(filePath, "r")
-	items_list = []
+	items_list = [] #Lista de itens referentes à instância
 
-	number_of_items = int(file.readline())
-	bin_capacity = int(file.readline())
+	#Setting the parameters
+	number_of_items = int(file.readline()) #Total number of items in the instance
+	bin_capacity = int(file.readline()) #The bin weight limit
 
 	#print("Número de itens:", number_of_items)
 	#print("Capacidade do Bin:", bin_capacity)
 
+	#Iterating each file line
 	for line in file:
+		#Removing special characters from line if any
 		line = line.strip()
+		
+		#Inserting item in items_list
 		items_list.append(int(line))
 
 	#print("Lista de itens: ", items_list)
@@ -27,33 +39,55 @@ def readInstanceArchive(filePath):
 
 	return bin_capacity, items_list
 
-def item_size(item):
-	bin_sum = 0
-	list_indexes = []
+#Retorna peso total que tem em um bin
+#Retorna uma lista que armazena os índices dos itens que estão em um bin
+def item_size(box):
 
-	for one in finditer('1', item):
-		bin_sum += items_list[one.start()]
+	#Bin starts empty
+	bin_sum = 0 #Total de peso no bin
+	list_indexes = [] #Lista de índice dos itens que estão no bin
+
+
+	#Finditer retorna um objeto que representa as posições que possuem 1 na string bitmap box
+	#Para cada índice retornado por finditer, acessamos o peso do item relacionado ao índice,
+	# somamos ele com o que já tem no bin e então guardamos seu índice na lista de índices que estão na bin.
+	for one in finditer('1', box):
+		bin_sum += items_list[one.start()] #one.start() é o índice do item
 		list_indexes.append(one.start())
 
 	return bin_sum, list_indexes
 
-def min_item(item):
-	bin_items_list = []
+	
+#Retorna o item de menor peso dentro de um bin e seu valor em peso
+def min_item(box):
+	bin_items_weight_list = [] #Lista dos pesos dos itens dentro do bin
 
-	for one in finditer('1', item):
-		bin_items_list.append(items_list[one.start()])
+	#Finditer retorna um objeto que representa as posições que possuem 1 na string bitmap box
+	#Neste for fazemos uma lista de pesos
+	for one in finditer('1', box):
+		bin_items_weight_list.append(items_list[one.start()]) #Insere na lista de itens da bin os pesos
 
-	min_item = min(bin_items_list)
-	min_index = items_list.index(min_item)
+	min_item = min(bin_items_weight_list) #Pega o item de menor peso
+	min_index = items_list.index(min_item) #Pega o índice deste
 
-	return min(bin_items_list), min_index
+	return min_item, min_index
 
+	
+#Algoritmo First Fit: Recebe uma lista de itens em ordem decrescente,
+#inserindo o item no primeiro bin que tiver espaço suficiente para guardá-lo
 def first_fit_algorithm(bin_capacity, items_list):
+	
+	
+	
+	#Lista de bins na qual cada bin é representado por uma string de 0's e 1's, em que as posições
+	#que possuem valor 1 representam qual item está presente neste bin de acordo com seu índice, referente a lista de itens.
 	bins_list = []
-	bin_index = 0
-	item_index = 0
+	
+	bin_index = 0 #Índice do bin
+	item_index = 0 #Índice do item
 
-	t0 = time()
+	t0 = time() #Começa a marcar o tempo de execução do algoritmo.
+		
 	while item_index < len(items_list): 
 		if bins_list == []:
 			bins_list.append([])
