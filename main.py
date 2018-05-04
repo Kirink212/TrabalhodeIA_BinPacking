@@ -178,8 +178,8 @@ def hill_climbing_test(bin_capacity, items_list):
 
 	# for i, u_bin in enumerate(bins_list):
 	# 	print("Bin ", i, ": \t", u_bin)
-
-	while (list_aux_index_1 <= list_aux_size):
+	counter = 0
+	while (counter <= 50):
 		better_solution = False
 
 		# Copying bins_list
@@ -211,10 +211,10 @@ def hill_climbing_test(bin_capacity, items_list):
 		rest_of_bin_1 = bin_capacity - size_1
 		rest_of_bin_2 = bin_capacity - size_2
 
-		print("Bin 1: ", bin_index_1)
-		print("Item 1: ", item_index_1)
-		print("Bin 2: ", bin_index_2)
-		print("Item 2: ", item_index_2)
+		# print("Bin 1: ", bin_index_1)
+		# print("Item 1: ", item_index_1)
+		# print("Bin 2: ", bin_index_2)
+		# print("Item 2: ", item_index_2)
 		# print("to rodando aqui")
 
 		# Verify if the change surpasses the capacity of one of the bins
@@ -310,6 +310,7 @@ def hill_climbing_test(bin_capacity, items_list):
 			bin_index_2 = list_aux[list_aux_index_2][1]
 			item_aux_index_1 = list_aux[list_aux_index_1][2][item_index_1]
 			item_aux_index_2 = list_aux[list_aux_index_2][2][item_index_2]
+		counter = counter + 1
 
 	t1 = time()
 
@@ -334,15 +335,15 @@ def hill_climbing_test(bin_capacity, items_list):
 #Instância t60_00
 bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_t60_00.txt")
 bins_list = hill_climbing_test(bin_capacity, items_list)
-# #Instância t120_01
-# bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_t120_01.txt")
-# bins_list = hill_climbing_test(bin_capacity, items_list)
-# #Instância t120_02
-# bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u120_02.txt")
-# bins_list = hill_climbing_test(bin_capacity, items_list)
-# #Instância t250_04
-# bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u250_04.txt")
-# bins_list = hill_climbing_test(bin_capacity, items_list)
-# #Instância t500_05
-# bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u500_05.txt")
-# bins_list = hill_climbing_test(bin_capacity, items_list)
+#Instância t120_01
+bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_t120_01.txt")
+bins_list = hill_climbing_test(bin_capacity, items_list)
+#Instância t120_02
+bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u120_02.txt")
+bins_list = hill_climbing_test(bin_capacity, items_list)
+#Instância t250_04
+bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u250_04.txt")
+bins_list = hill_climbing_test(bin_capacity, items_list)
+#Instância t500_05
+bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u500_05.txt")
+bins_list = hill_climbing_test(bin_capacity, items_list)
