@@ -143,13 +143,17 @@ def first_fit_algorithm_modified(bin_capacity, items_list):
 def empty_bin(bin, items_list):
 	return (bin == "0"*len(items_list))
 
+#Initially uses the first fit method to create an initial state and from it,
+# make swaps and reallocates to arrive at better solutions.
+#If from the initial state the algorithm can't find a better state, 
+#it randomizes the items list and starts again. But only do it a fixed amount of times.
 
 def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations, total_no_better):
-	t0 = time()
-	restart_algorithm = False
-	restart_counter = 0
-	bins_list_solution = []
-	min_num_of_bins_found = 100000
+	t0 = time() #Starts to count the execution time
+	restart_algorithm = False #Verifies if you did a restart
+	restart_counter = 0 #Count the number of restarts
+	bins_list_solution = [] #List of solutions found
+	min_num_of_bins_found = 100000 #Upper limit of bins
 	
 	while restart_counter < restart_limit:
 		if restart_algorithm:
