@@ -47,51 +47,50 @@ def item_size(box):
 	list_indexes = [] #List that stores the Item indexes that are in the bin
 
 
-	#Finditer retorna um objeto que representa as posições que possuem 1 na string bitmap box
-	#Para cada índice retornado por finditer, acessamos o peso do item relacionado ao índice,
-	# somamos ele com o que já tem no bin e então guardamos seu índice na lista de índices que estão na bin.
+	#Finditer returns an object that represents the positions that are 1 in the box bitmap string
+	#For each index returned, we access the item weight related to that index
+	#and sum it with the bin weight. Then we store its index in the bin list of indexes 
 	for one in finditer('1', box):
-		bin_sum += items_list[one.start()] #one.start() é o índice do item
+		bin_sum += items_list[one.start()] #one.start() its the item index
 		list_indexes.append(one.start())
 
 	return bin_sum, list_indexes
 
-	
-#Retorna o item de menor peso dentro de um bin e seu valor em peso
+#Retuns the item with less weight inside a bin and its index 	
 def min_item(box):
-	bin_items_weight_list = [] #Lista dos pesos dos itens dentro do bin
-
-	#Finditer retorna um objeto que representa as posições que possuem 1 na string bitmap box
-	#Neste for fazemos uma lista de pesos
+	bin_items_weight_list = [] #List of weights inside a bin
+	
+	#Finditer returns an object that represents the positions that are 1 in the box bitmap string
+	#In this for we create a weight list
 	for one in finditer('1', box):
 		bin_items_weight_list.append(items_list[one.start()]) #Insere na lista de itens da bin os pesos
 
-	min_item = min(bin_items_weight_list) #Pega o item de menor peso
-	min_index = items_list.index(min_item) #Pega o índice deste
+	min_item = min(bin_items_weight_list) #Get the item with less weight
+	min_index = items_list.index(min_item) #Get its index
 
 	return min_item, min_index
 
-#Algoritmo First Fit: Recebe uma lista de itens em ordem decrescente,
-#inserindo o item no primeiro bin que tiver espaço suficiente para guardá-lo
+	
+#First Fit Algorithm: Receives a list of items in descending order,
+#inserting the item on the first bin with enough space to store it
 def first_fit_algorithm_modified(bin_capacity, items_list):
 
-	#Lista de bins na qual cada bin é representado por uma string de 0's e 1's, em que as posições
-	#que possuem valor 1 representam qual item está presente neste bin de acordo com seu índice, referente a lista de itens.
+	#Bin list where each bin is represented as a string of 0's and 1's, where each position that have number 1 represents which item is on the bin 
 	bins_list = []
-	bin_index = 0 #Índice do bin
-	item_index = 0 #Índice do item
-	string_bin_pattern = "0"*len(items_list) #Cria uma string de zeros de tamanho igual ao número de itens do problema.
+	bin_index = 0
+	item_index = 0
+	string_bin_pattern = "0"*len(items_list) #Creates a string with size equals the number of items in the problem, filled with zeroes
 
 	# t0 = time()
-
-	#Repetição até o final da items_list
+	
+	#Repeats until items_list is over
 	while item_index < len(items_list): 
 	
 		#If the list is empty, create the first Bin filled with 0's.
 		if bins_list == []:
 			bins_list.append(string_bin_pattern)
 
-		#Retorna dois valores. O primeiro é o peso total do bin e o segundo é ignorado.
+		#Returns two values. The first if the total weight of the bin and the second is ignored.
 		bin_sum, aux = item_size(bins_list[bin_index])
 		
 		#Variable that receives the item weight and sums with the bin weight 
@@ -110,19 +109,19 @@ def first_fit_algorithm_modified(bin_capacity, items_list):
 		#But if we can put the item inside the bin
 		else:
 			
-			#Como strings em python são imutáveis, convertemos a mesma para um lista
+			#As strings in python are immutable, we convert it to a list
 			aux_list = list(bins_list[bin_index])
 			
-			#Trocamos o valor 0 por 1, para indicar que o peso está no bin
+			#We change the 0 value to 1, indicating that the item is in the bin
 			aux_list[item_index] = '1'
 			
-			#Converte a lista para uma string e substitui a antiga string do Bin pela nova
+			#Converts the list to a string and replaces the old string with the new one.
 			bins_list[bin_index] = "".join(aux_list)
 
-			#Andamos para o próximo item
+			#Go to the next item
 			item_index = item_index + 1
 			
-			#Voltamos para o bin inicial
+			#Go back to the initial bin
 			bin_index = 0
 
 	# t1 = time()
