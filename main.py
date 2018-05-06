@@ -16,7 +16,7 @@ from operator import itemgetter
 
 def readInstanceArchive(filePath):
 	file = open(filePath, "r")
-	items_list = [] #Lista de itens referentes à instância
+	items_list = [] #Instance Items List
 
 	#Setting the parameters
 	number_of_items = int(file.readline()) #Total number of items in the instance
@@ -38,14 +38,13 @@ def readInstanceArchive(filePath):
 	file.close()
 
 	return bin_capacity, items_list
-
-#Retorna peso total que tem em um bin
-#Retorna uma lista que armazena os índices dos itens que estão em um bin
+#Returns bin total weight
+#Returns a list that stores the items indexes that are in a bin
 def item_size(box):
 
 	#Bin starts empty
-	bin_sum = 0 #Total de peso no bin
-	list_indexes = [] #Lista de índice dos itens que estão no bin
+	bin_sum = 0 #Bin total weight
+	list_indexes = [] #List that stores the Item indexes that are in the bin
 
 
 	#Finditer retorna um objeto que representa as posições que possuem 1 na string bitmap box
@@ -186,15 +185,10 @@ def first_fit_algorithm_modified(bin_capacity, items_list):
 	# print("-------------------------------")
 	return bins_list
 
-def swap_items(item1, item2):
-	aux = item1
-	item1 = item2
-	item2 = aux
-
-	return item1, item2
-
+#Verifies if the bin is empty or not
 def empty_bin(bin, items_list):
 	return (bin == "0"*len(items_list))
+
 
 def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations, total_no_better):
 	t0 = time()
