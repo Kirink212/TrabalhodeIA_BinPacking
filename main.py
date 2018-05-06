@@ -73,15 +73,14 @@ def min_item(box):
 	
 #First Fit Algorithm: Receives a list of items in descending order,
 #inserting the item on the first bin with enough space to store it
-def first_fit_algorithm_modified(bin_capacity, items_list):
-
+def first_fit_algorithm_modified(bin_capacity, items_list, show_log):
 	#Bin list where each bin is represented as a string of 0's and 1's, where each position that have number 1 represents which item is on the bin 
 	bins_list = []
 	bin_index = 0
 	item_index = 0
 	string_bin_pattern = "0"*len(items_list) #Creates a string with size equals the number of items in the problem, filled with zeroes
 
-	# t0 = time()
+	t0 = time()
 	
 	#Repeats until items_list is over
 	while item_index < len(items_list): 
@@ -124,19 +123,21 @@ def first_fit_algorithm_modified(bin_capacity, items_list):
 			#Go back to the initial bin
 			bin_index = 0
 
-	# t1 = time()
+	t1 = time()
 
-	# for u_bin in bins_list:
-	#  	bin_sum = sum(u_bin)
-	#  	print("Este bin tem ", bin_capacity - bin_sum, " de peso sobrando")
+	if show_log:
+		print("-------------------------------")
+		print("Total de bins: ", len(bins_list))
+		for index, one_bin in enumerate(bins_list):
+			print("Bin ", index+1, ":")
+			count = 0
+			for i, string in enumerate(one_bin):
+				if string == '1':
+					count = count + 1
+					print("\tItem ", count, ":", items_list[i])
+		print("Tempo de execução: ", t1 - t0)
+		print("-------------------------------")
 
-	# print("-------------------------------")
-	# for i, u_bin in enumerate(bins_list):
-	# 	print("Bin ", i, ": \t", u_bin)
-	# print(items_list)
-	# print("Total de bins: ", len(bins_list))
-	# print("Tempo de execução: ", t1 - t0)
-	# print("-------------------------------")
 	return bins_list
 
 #Verifies if the bin is empty or not
@@ -153,6 +154,7 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 	restart_algorithm = False #Verifies if you did a restart
 	restart_counter = 0 #Count the number of restarts
 	bins_list_solution = [] #List of solutions found
+	aux_bins_list_solution = []
 	min_num_of_bins_found = 100000 #Upper limit of bins
 	
 	while restart_counter < restart_limit:
@@ -160,7 +162,7 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 			shuffle(items_list)
 			restart_algorithm = False
 
-		bins_list = first_fit_algorithm_modified(bin_capacity, items_list)
+		bins_list = first_fit_algorithm_modified(bin_capacity, items_list, False)
 		initial_best = len(bins_list)
 
 		bin_index_1 = 0
@@ -172,7 +174,7 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 			bin_size_list.append( (bin_sum, i, index_list) )
 
 		list_aux = sorted(bin_size_list, key=itemgetter(0))
-		bins_list_solution = bins_list
+		aux_bins_list_solution = bins_list
 		bin_less_weight_index = list_aux[0][1]
 		current_less_weight, current_less_weight_index = min_item(bins_list[bin_less_weight_index])
 		list_aux_index_1 = 1
@@ -273,8 +275,8 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 				# Current bins_list changes
 				bins_list = bins_list_aux
 
-				if len(bins_list) < len(bins_list_solution):
-					bins_list_solution = bins_list
+				if len(bins_list) < len(aux_bins_list_solution):
+					aux_bins_list_solution = bins_list
 
 				bin_size_list = []
 
@@ -325,35 +327,102 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 				item_aux_index_2 = list_aux[list_aux_index_2][2][item_index_2]
 			counter = counter + 1
 
-		if len(bins_list_solution) < min_num_of_bins_found:
-			min_num_of_bins_found = len(bins_list_solution)
+		if len(aux_bins_list_solution) < min_num_of_bins_found:
+			min_num_of_bins_found = len(aux_bins_list_solution)
+			bins_list_solution = aux_bins_list_solution
 
 		restart_counter = restart_counter + 1
 	t1 = time()
 
 	print("-------------------------------")
 	print("Total de bins: ", min_num_of_bins_found)
+	for index, one_bin in enumerate(bins_list_solution):
+		print("Bin ", index+1, ":")
+		count = 0
+		for i, string in enumerate(one_bin):
+			if string == '1':
+				count = count + 1
+				print("\tItem ", count, ":", items_list[i])
+
 	print("Tempo de execução: ", t1 - t0)
 	print("-------------------------------")
 
 	return bins_list_solution
 
+#Function to generate output archive
+#Receives last bins' list found as solution
+#and the path to the file in which the results
+#will be written
+def outputFile(bins_list_solution, filePath):
+	#Open file in write mode
+	file = open(filePath, "w")
+
+	#Get the number of bins
+	num_bins = str(len(bins_list_solution))
+
+	#Write the number of bins in file
+	file.write(num_bins + "\n")
+
+	#For each bin in bins_list, write each item size
+	#in the same file line
+	for index, one_bin in enumerate(bins_list_solution):
+		aux = ""
+		for i, string in enumerate(one_bin):
+			#Just concatenate when there's one in string
+			if string == '1':
+				#Find the items size in items_list, depending on i (index)
+				aux += str(items_list[i]) + " "
+		#Write the items sizes in file
+		file.write(aux + "\n")
+
+	#Close file
+	file.close()
+
 ########################################
 ############ MAIN PROGRAM ##############
 ########################################
 
+
+#########################################################################
+# Execution order for each instance:									#
+#	1 - Read instance file;												#
+#	2 - Call first fit algorithm;										#
+#	3 - Write result in output file (just First Fit results folder);	#
+#	4 - Call hill climbing algorithm;									#
+#	5 - Write result in output file (just Hill Climbing results folder).#
+#########################################################################
+
 #Instância t60_00
 bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_t60_00.txt")
+bins_list = first_fit_algorithm_modified(bin_capacity, items_list, True)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-FirstFit-Solution/Falkenauer_t60_00.txt")
 bins_list = hill_climbing_test(bin_capacity, items_list, 30, 100, 20)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkenauer_t60_00.txt")
+
 #Instância t120_01
 bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_t120_01.txt")
+bins_list = first_fit_algorithm_modified(bin_capacity, items_list, True)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-FirstFit-Solution/Falkenauer_t120_01.txt")
 bins_list = hill_climbing_test(bin_capacity, items_list, 30, 100, 20)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkenauer_t120_01.txt")
+
 #Instância t120_02
 bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u120_02.txt")
+bins_list = first_fit_algorithm_modified(bin_capacity, items_list, True)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-FirstFit-Solution/Falkenauer_u120_02.txt")
 bins_list = hill_climbing_test(bin_capacity, items_list, 30, 100, 20)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkenauer_u120_02.txt")
+
 #Instância t250_04
 bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u250_04.txt")
+bins_list = first_fit_algorithm_modified(bin_capacity, items_list, True)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-FirstFit-Solution/Falkenauer_u250_04.txt")
 bins_list = hill_climbing_test(bin_capacity, items_list, 30, 100, 20)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkenauer_u250_04.txt")
+
 #Instância t500_05
 bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u500_05.txt")
+bins_list = first_fit_algorithm_modified(bin_capacity, items_list, True)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-FirstFit-Solution/Falkenauer_u500_05.txt")
 bins_list = hill_climbing_test(bin_capacity, items_list, 30, 100, 20)
+outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkenauer_u500_05.txt")
