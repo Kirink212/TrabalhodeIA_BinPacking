@@ -72,12 +72,7 @@ def min_item(box):
 
 	return min_item, min_index
 
-	
-#Algoritmo First Fit: Recebe uma lista de itens em ordem decrescente,
-#inserindo o item no primeiro bin que tiver espaço suficiente para guardá-lo
 def first_fit_algorithm(bin_capacity, items_list):
-	
-	
 	
 	#Lista de bins na qual cada bin é representado por uma string de 0's e 1's, em que as posições
 	#que possuem valor 1 representam qual item está presente neste bin de acordo com seu índice, referente a lista de itens.
@@ -88,7 +83,10 @@ def first_fit_algorithm(bin_capacity, items_list):
 
 	t0 = time() #Começa a marcar o tempo de execução do algoritmo.
 		
+	#Repetição até o final da items_list
 	while item_index < len(items_list): 
+		
+	
 		if bins_list == []:
 			bins_list.append([])
 
@@ -119,32 +117,58 @@ def first_fit_algorithm(bin_capacity, items_list):
 	print("-------------------------------")
 	return bins_list
 
+#Algoritmo First Fit: Recebe uma lista de itens em ordem decrescente,
+#inserindo o item no primeiro bin que tiver espaço suficiente para guardá-lo
 def first_fit_algorithm_modified(bin_capacity, items_list):
+
+	#Lista de bins na qual cada bin é representado por uma string de 0's e 1's, em que as posições
+	#que possuem valor 1 representam qual item está presente neste bin de acordo com seu índice, referente a lista de itens.
 	bins_list = []
-	bin_index = 0
-	item_index = 0
-	string_bin_pattern = "0"*len(items_list)
+	bin_index = 0 #Índice do bin
+	item_index = 0 #Índice do item
+	string_bin_pattern = "0"*len(items_list) #Cria uma string de zeros de tamanho igual ao número de itens do problema.
 
 	# t0 = time()
 
+	#Repetição até o final da items_list
 	while item_index < len(items_list): 
+	
+		#If the list is empty, create the first Bin filled with 0's.
 		if bins_list == []:
 			bins_list.append(string_bin_pattern)
 
+		#Retorna dois valores. O primeiro é o peso total do bin e o segundo é ignorado.
 		bin_sum, aux = item_size(bins_list[bin_index])
+		
+		#Variable that receives the item weight and sums with the bin weight 
 		check_sum = items_list[item_index] + bin_sum
-
+		
+		#If the sum of item weight and bin weight surpass the bin capcity, we go to the next bin.
 		if check_sum > bin_capacity:
 
+			#If there is no other bins, we create one.
 			if bin_index == len(bins_list) - 1:
 				bins_list.append(string_bin_pattern)
+				
+			#Go to the next bin
 			bin_index = bin_index + 1
+			
+		#But if we can put the item inside the bin
 		else:
+			
+			#Como strings em python são imutáveis, convertemos a mesma para um lista
 			aux_list = list(bins_list[bin_index])
+			
+			#Trocamos o valor 0 por 1, para indicar que o peso está no bin
 			aux_list[item_index] = '1'
+			
+			#Converte a lista para uma string e substitui a antiga string do Bin pela nova
 			bins_list[bin_index] = "".join(aux_list)
 
+			#Andamos para o próximo item
 			item_index = item_index + 1
+			
+			#Voltamos para o bin inicial
 			bin_index = 0
 
 	# t1 = time()
