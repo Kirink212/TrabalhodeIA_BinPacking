@@ -1,2 +1,0 @@
-def semanas(dias):
-	return dias//7
