@@ -241,6 +241,7 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 
 		counter = 0
 		better_counter = 0
+
 		# While counter doesn't reach the total iterations
 		# passed as a parameter, the algorithm will
 		# be executed (Hill Climbing Loop)
@@ -342,10 +343,14 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 
 				# The lines bellow does the same thing
 				# that they do in the beginning of the
-				# algorithm, 
+				# algorithm, that is when we create the
+				# bin_size_list to receive the bins total
+				# weight, sorting it in decreasing order
+				# and finally restarting the indexes
+				# that were set in the beginning, as the
+				# bins_list has been changed
 				bin_size_list = []
 
-				# The lines bellow does the same thing 
 				for i, u_bin in enumerate(bins_list):
 					bin_sum, index_list = item_size(u_bin)
 					bin_size_list.append( (bin_sum, i, index_list) )
@@ -363,36 +368,52 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 				bin_index_1 = list_aux[list_aux_index_1][1]
 				bin_index_2 = list_aux[list_aux_index_2][1]
 			else:
-
+				# Choose other item_2 to swap with item_1
 				item_index_2 = item_index_2 + 1
 
+				# If this is the last item from bin_2,
+				# go to the next bin
 				if item_index_2 > (total_items_2 - 1):
 					item_index_2 = 0
 					list_aux_index_2 = list_aux_index_2 + 1
 
+				# If bin_2 is the last one from the list,
+				# it means that we tried to swap the item_1
+				# of bin_1 with every other item
 				if list_aux_index_2 > list_aux_size:
 					item_index_1 = item_index_1 + 1
 					item_index_2 = 0
 					list_aux_index_2 = list_aux_index_1 + 1
 
+				# If this is the last item from bin_1
+				# and all the swaps were done, restart
+				# the swaps with first item of next bin
 				if item_index_1 > (total_items_1 - 1):
 					item_index_1 = 0
 					item_index_2 = 0
 					list_aux_index_1 = list_aux_index_1 + 1
 					list_aux_index_2 = list_aux_index_1 + 1
 
+				# If bin_1 is the last of the list,
+				# there all the swaps were done
 				if list_aux_index_1 >= list_aux_size:
 					item_index_1 = 0
 					item_index_2 = 0
 					list_aux_index_2 = 0
 					break
 
+				# Substitute current indexes of bins and items
 				bin_index_1 = list_aux[list_aux_index_1][1]
 				bin_index_2 = list_aux[list_aux_index_2][1]
 				item_aux_index_1 = list_aux[list_aux_index_1][2][item_index_1]
 				item_aux_index_2 = list_aux[list_aux_index_2][2][item_index_2]
+
 			counter = counter + 1
 
+		# If the len of the auxiliar list is smaller
+		# than the current minimun number of bins found,
+		# minimum_num_of_bin_found receives the new
+		# smaller value found
 		if len(aux_bins_list_solution) < min_num_of_bins_found:
 			min_num_of_bins_found = len(aux_bins_list_solution)
 			bins_list_solution = aux_bins_list_solution
@@ -402,13 +423,13 @@ def hill_climbing_test(bin_capacity, items_list, restart_limit, total_iterations
 
 	print("-------------------------------")
 	print("Total de bins: ", min_num_of_bins_found)
-	# for index, one_bin in enumerate(bins_list_solution):
-	# 	print("Bin ", index+1, ":")
-	# 	count = 0
-	# 	for i, string in enumerate(one_bin):
-	# 		if string == '1':
-	# 			count = count + 1
-	# 			print("\tItem ", count, ":", items_list[i])
+	for index, one_bin in enumerate(bins_list_solution):
+		print("Bin ", index+1, ":")
+		count = 0
+		for i, string in enumerate(one_bin):
+			if string == '1':
+				count = count + 1
+				print("\tItem ", count, ":", items_list[i])
 
 	print("Tempo de execução: ", t1 - t0)
 	print("-------------------------------")
@@ -476,7 +497,7 @@ outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkena
 bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u120_02.txt")
 bins_list = first_fit_algorithm_modified(bin_capacity, items_list, True)
 outputFile(bins_list, "Instances-SubSet-Falkenauer-FirstFit-Solution/Falkenauer_u120_02.txt")
-bins_list = hill_climbing_test(bin_capacity, items_list, 30, 100, 20)
+bins_list = hill_climbing_test(bin_capacity, items_list, 10, 100, 20)
 outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkenauer_u120_02.txt")
 
 #Instância t250_04
@@ -490,5 +511,5 @@ outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkena
 bin_capacity, items_list = readInstanceArchive("Instances-SubSet-Falkenauer 2/Falkenauer_u500_05.txt")
 bins_list = first_fit_algorithm_modified(bin_capacity, items_list, True)
 outputFile(bins_list, "Instances-SubSet-Falkenauer-FirstFit-Solution/Falkenauer_u500_05.txt")
-bins_list = hill_climbing_test(bin_capacity, items_list, 1, 100, 20)
+bins_list = hill_climbing_test(bin_capacity, items_list, 10, 100, 20)
 outputFile(bins_list, "Instances-SubSet-Falkenauer-HillClimbing-Solution/Falkenauer_u500_05.txt")
